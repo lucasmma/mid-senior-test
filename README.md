@@ -181,10 +181,10 @@ You will be evaluated based on the following:
 
 Here are the steps to get started:
 
-1. Clone the repository.
-2. Build the app and dependencies using `docker-compose up`.
-3. Follow the API documentation to test the endpoints.
-4. Submit your completed solution by sharing the repository URL.
+Here are the steps to get started:
+
+1. Fork the repository.
+2. Send the email with the repository URL to me after you completed the solution.
 
 ---
 
