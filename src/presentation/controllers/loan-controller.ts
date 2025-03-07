@@ -8,7 +8,7 @@ import { createLoanSchema } from '../../main/schemas/loan/create-loan-schema'
 export class LoanController {
   constructor() {
   }
-  async create(
+  async createLoan(
     request: HttpRequest<( typeof createLoanSchema._output)>,
   ): Promise<HttpResponse> {
     const body = request.body!
@@ -28,5 +28,19 @@ export class LoanController {
 
 
     return ok(loan)
+  }
+
+  async listLoans(
+    request: HttpRequest,
+  ): Promise<HttpResponse> {
+    var user = request.auth!.user!
+
+    const loans = prisma.loan.findMany({
+      where: {
+        user_id: user.id
+      }
+    })
+
+    return ok(loans)
   }
 }
