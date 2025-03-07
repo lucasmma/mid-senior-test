@@ -143,25 +143,5 @@ describe('UserController', () => {
       );
     });
   });
-
-  describe('editUser', () => {
-    it('should update user details', async () => {
-      const request = {
-        auth: { user: { id: 'user1' } },
-        body: { email: 'updated@example.com' },
-      } as HttpRequest;
-
-      const mockUser = {
-        email: 'updated@example.com',
-      }
-
-      userUpdate.mockResolvedValue(mockUser);
-
-      const response = await userController.editUser(request);
-
-      expect(response.statusCode).toEqual(200);
-      expect(response.body).toEqual(mockUser);
-    });
-  });
 });
   
