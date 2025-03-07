@@ -12,4 +12,5 @@ export default (router: Router): void => {
   router.post(baseRoute, authorization('USER'), adaptRoute(controller, controller.createLoan, { body: createLoanSchema }))
   router.get(baseRoute, authorization('USER'), adaptRoute(controller, controller.listLoans))
   router.get(baseRoute + '/:id', authorization('USER'), adaptRoute(controller, controller.listLoan, { param: idSchema }))
+  router.patch(baseRoute + '/:id/status', authorization('ADMIN'), adaptRoute(controller, controller.updateStatus, { param: idSchema }))
 }
