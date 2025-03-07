@@ -42,20 +42,17 @@ export const oauthTokenSchema = z.object({
   refreshToken: z.string().optional(),
 }).strict().superRefine((data, ctx) => {
   if (data.grantType === 'client_credentials') {
-    if (!data.email) {
-      ctx.addIssue({
-        path: ['email'],
-        message: 'email is required when grantType is "client_credentials"',
-        code: z.ZodIssueCode.custom,
-      });
-    }
-    if (!data.password) {
-      ctx.addIssue({
-        path: ['password'],
-        message: 'password is required when grantType is "client_credentials"',
-        code: z.ZodIssueCode.custom,
-      });
-    }
+    var necessaryFields: ('email' | 'password')[] = ['email', 'password']
+    necessaryFields.forEach(key => {
+      if (!data[key]) {
+        ctx.addIssue({
+          path: [key],
+          message: key + ' is not allowed when grantType is "client_credentials"',
+          code: z.ZodIssueCode.custom,
+        });
+      }
+    })
+    
   } else {
     if (!data.refreshToken) {
       ctx.addIssue({
