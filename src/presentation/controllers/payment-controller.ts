@@ -58,4 +58,29 @@ export class PaymentController {
     return ok(payment)
   }
 
+  async listPayment(
+    request: HttpRequest,
+  ): Promise<HttpResponse> {
+    var user = request.auth!.user!
+    const { id } = request.params!
+
+    const loan = await prisma.loan.findUnique({
+      where: {
+        id: id
+      }
+    })
+
+    if(!loan) {
+      return badRequest(new Error('Loan not found'))
+    }
+
+    const payments = await prisma.payment.findMany({
+      where: {
+        loan_id: id
+      },
+    })
+
+    return ok(payments)
+  }
+
 }
