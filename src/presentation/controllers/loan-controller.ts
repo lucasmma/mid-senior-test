@@ -87,7 +87,8 @@ export class LoanController {
         id: id
       },
       data: {
-        status: request.body!.status
+        status: request.body!.status,
+        remaining_balance: loan.amount
       }
     })
 
