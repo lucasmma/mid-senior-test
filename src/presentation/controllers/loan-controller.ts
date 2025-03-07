@@ -1,10 +1,8 @@
 import { HttpRequest, HttpResponse } from '../protocols'
 import { badRequest, ok } from '../helpers/http-helper'
 import prisma from '../../main/config/prisma'
-import { JwtAdapter } from '../../infra/auth/jwt-adapter'
-import { omit } from '../helpers/omit-field'
 import { createLoanSchema } from '../../main/schemas/loan/create-loan-schema'
-import { idSchema } from '../../main/schemas/id-schema'
+import { updateLoanStatusSchema } from '../../main/schemas/loan/update-loan-status-schema'
 
 export class LoanController {
   constructor() {
@@ -64,6 +62,34 @@ export class LoanController {
     if(user.role == 'USER' && loan.user_id !== user.id) {
       return badRequest(new Error('Loan not found'))
     }
+
+    return ok(loan)
+  }
+  
+  async updateStatus(
+    request: HttpRequest<(typeof updateLoanStatusSchema._output)>,
+  ): Promise<HttpResponse> {
+    var user = request.auth!.user!
+    const { id } = request.params!
+
+    var loan = await prisma.loan.findUnique({
+      where: {
+        id: id
+      }
+    })
+
+    if(!loan) {
+      return badRequest(new Error('Loan not found'))
+    }
+
+    loan = await prisma.loan.update({
+      where: {
+        id: id
+      },
+      data: {
+        status: request.body!.status
+      }
+    })
 
     return ok(loan)
   }
