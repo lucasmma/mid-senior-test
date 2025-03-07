@@ -7,7 +7,6 @@ import { JwtAdapter } from '../../infra/auth/jwt-adapter'
 import { createUserSchema } from '../../main/schemas/user/create-user-schema'
 import { oauthTokenSchema } from '../../main/schemas/user/oauth-token-schema'
 import { omit } from '../helpers/omit-field'
-import { editUserSchema } from '../../main/schemas/user/edit-user-schema'
 import { securityEventCounter } from '../../main/config/registry-metrics'
 
 export class UserController {
@@ -37,7 +36,7 @@ export class UserController {
     const hashedPassword = await this.bcrypt.encrypt(body.password)
 
     const bodyWithoutPassword = omit(body, ['password', 'passwordConfirmation'])
-    // reomve password from body
+    // remove password from body
 
     const user = await prisma.user.create({
       data: {
@@ -46,8 +45,6 @@ export class UserController {
         password: hashedPassword,
       }
     })
-
-    // TODO: implement jwt management
 
     const userWithoutPassword = omit(user, ['password'])
 
@@ -117,32 +114,14 @@ export class UserController {
         return badRequest(new Error('Invalid refresh token'))
       }
 
-      var token = this.jwtAdapter.encode(user, '8h')
-      var refreshToken = this.secondaryJwtAdapter.encode(user, '7d')
+      const userWithoutPassword = omit(user, ['password'])
+      var token = this.jwtAdapter.encode(userWithoutPassword, '8h')
+      var refreshToken = this.secondaryJwtAdapter.encode(userWithoutPassword, '7d')
 
       return ok({
         token,
         refreshToken
       })
     }
-  }
-
-  async editUser(
-    request: HttpRequest<(typeof editUserSchema._output)>,
-  ): Promise<HttpResponse> {
-    const user = request.auth!.user
-
-    const updatedUser = await prisma.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        ...request.body!,
-      }
-    })
-
-    var userWithoutPassword = omit(updatedUser, ['password', 'role'])
-
-    return ok(userWithoutPassword)
   }
 }
