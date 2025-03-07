@@ -8,7 +8,7 @@ const app = express()
 setupSwaggerRoute(app)
 setupMetricsRoute(app)
 const router = Router()
-app.use('/api/v1', router)
+app.use('/api', router)
 setupMiddlewares(router)
 setupRoutes(router)
 
