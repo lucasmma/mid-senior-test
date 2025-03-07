@@ -82,6 +82,10 @@ export class LoanController {
       return badRequest(new Error('Loan not found'))
     }
 
+    if(loan.status == 'APPROVED' || loan.status == 'REJECTED') {
+      return badRequest(new Error('Loan already processed'))
+    }
+
     loan = await prisma.loan.update({
       where: {
         id: id
