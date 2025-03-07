@@ -6,7 +6,6 @@ import { SchemaAdapter } from '../../infra/schema/schema-adapter'
 import { makeUserController } from '../factories/user-factory'
 import { oauthTokenSchema } from '../schemas/user/oauth-token-schema'
 import { adaptAuthRoute } from '../route-adapters/auth-route-adapter'
-import { editUserSchema } from '../schemas/user/edit-user-schema'
 
 /**
  * @openapi
@@ -31,9 +30,6 @@ import { editUserSchema } from '../schemas/user/edit-user-schema'
  *         password:
  *           type: string
  *           example: "password123"
- *         documentNumber:
- *           type: string
- *           example: "123456789"
  *         role:
  *           type: string
  *           enum: [ADMIN, USER]
@@ -51,7 +47,6 @@ import { editUserSchema } from '../schemas/user/edit-user-schema'
  *         - email
  *         - name
  *         - password
- *         - documentNumber
  *         - role
  *         - createdAt
  *         - updatedAt
@@ -62,7 +57,6 @@ import { editUserSchema } from '../schemas/user/edit-user-schema'
  *         - `email`: The email address of the user, which must be unique.
  *         - `name`: The name of the user.
  *         - `password`: The password of the user.
- *         - `documentNumber`: The document number of the user.
  *         - `role`: The role of the user, either `ADMIN` or `USER`.
  *         - `createdAt`: Timestamp of user creation.
  *         - `updatedAt`: Timestamp of the last update to the user.
@@ -71,7 +65,6 @@ import { editUserSchema } from '../schemas/user/edit-user-schema'
  *         email: "user@example.com"
  *         name: "John Doe"
  *         password: "password123"
- *         documentNumber: "123456789"
  *         role: "USER"
  *         createdAt: "2024-12-30T00:00:00Z"
  *         updatedAt: "2024-12-30T00:00:00Z"
@@ -93,26 +86,6 @@ import { editUserSchema } from '../schemas/user/edit-user-schema'
  *     responses:
  *       200:
  *         description: User created successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *   put:
- *     summary: Update a user
- *     description: Update an existing user's details.
- *     tags:
- *       - Users
- *     security:
- *       - BearerAuth: [] 
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/EditUser'
- *     responses:
- *       200:
- *         description: User updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -146,10 +119,9 @@ import { editUserSchema } from '../schemas/user/edit-user-schema'
  */
 
 export default (router: Router): void => {
-  const baseRoute = '/user'
+  const baseRoute = '/users'
   const controller = makeUserController()
 
-  router.post(baseRoute, adaptRoute(controller, controller.createUser, { body: createUserSchema }))
-  router.post('/oauth', adaptRoute(controller, controller.oauthToken, { body: oauthTokenSchema }))
-  router.put(baseRoute, adaptAuthRoute(controller.jwtAdapter) , adaptRoute(controller, controller.editUser, { body: editUserSchema }))
+  router.post(baseRoute + '/register', adaptRoute(controller, controller.createUser, { body: createUserSchema }))
+  router.post(baseRoute + '/login', adaptRoute(controller, controller.oauthToken, { body: oauthTokenSchema }))
 }
