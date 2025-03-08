@@ -21,11 +21,18 @@ export class LoanRepository implements DbLoanRepository {
         remaining_balance: 0,
       },
     })
+    await this.loanCache.set(loan.id, loan, 60 * 60 * 24 * 7)
+
     return loan
   }
 
   async getLoanById(loanId: string): Promise<Loan | null> {
     // implementation
+    const cachedLoan = await this.loanCache.get<Loan>(loanId)
+    if (cachedLoan) {
+      return cachedLoan
+    }
+
     const loan = await prisma.loan.findUnique({
       where: {
         id: loanId,
@@ -42,6 +49,8 @@ export class LoanRepository implements DbLoanRepository {
       },
       data: data,
     })
+    await this.loanCache.set(loan.id, loan, 60 * 60 * 24 * 7)
+
     return loan
   }
 }
