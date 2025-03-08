@@ -16,18 +16,12 @@ export class LoanController {
     const body = request.body!
     var user = request.auth!.user!
 
-    const loan = await prisma.loan.create({
-      data: {
-        amount: body.amount,
-        purpose: body.purpose,
-        duration: body.duration,
-        user_id: user.id,
-        status: 'PENDING',
-        total_paid: 0,
-        remaining_balance: 0,
-      }
+    const loan = await this.loanRepository.createLoan({
+      amount: body.amount,
+      purpose: body.purpose,
+      duration: body.duration,
+      user_id: user.id,
     })
-
 
     return ok(loan)
   }
