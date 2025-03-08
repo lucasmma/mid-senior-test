@@ -11,6 +11,6 @@ export default (router: Router): void => {
   const baseRoute = '/payments'
   const controller = makePaymentController()
 
-  router.post(baseRoute, authorization('USER'), adaptRoute(controller, controller.createLoan, { body: createPaymentSchema }))
+  router.post(baseRoute, authorization('USER'), adaptRoute(controller, controller.createPayment, { body: createPaymentSchema }))
   router.get('/loans/:id/payments', authorization('USER'), adaptRoute(controller, controller.listPayment, { param: idSchema, query: paginationSchema }))
 }

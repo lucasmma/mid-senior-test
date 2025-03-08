@@ -7,7 +7,7 @@ import { paginationSchema } from '../../main/schemas/pagination-schema'
 export class PaymentController {
   constructor() {
   }
-  async createLoan(
+  async createPayment(
     request: HttpRequest<( typeof createPaymentSchema._output)>,
   ): Promise<HttpResponse> {
     const body = request.body!
