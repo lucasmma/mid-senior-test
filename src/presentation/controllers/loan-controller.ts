@@ -3,6 +3,7 @@ import { badRequest, ok } from '../helpers/http-helper'
 import prisma from '../../main/config/prisma'
 import { createLoanSchema } from '../../main/schemas/loan/create-loan-schema'
 import { updateLoanStatusSchema } from '../../main/schemas/loan/update-loan-status-schema'
+import { paginationSchema } from '../../main/schemas/pagination-schema'
 
 export class LoanController {
   constructor() {
@@ -30,14 +31,16 @@ export class LoanController {
   }
 
   async listLoans(
-    request: HttpRequest,
+    request: HttpRequest<null, (typeof paginationSchema._output) >,
   ): Promise<HttpResponse> {
     var user = request.auth!.user!
 
     const loans = await prisma.loan.findMany({
       where: {
         user_id: user.id
-      }
+      },
+      skip: request.query?.skip,
+      take: request.query?.take,
     })
 
     return ok(loans)
