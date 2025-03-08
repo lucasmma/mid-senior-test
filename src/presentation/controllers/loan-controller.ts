@@ -4,9 +4,11 @@ import prisma from '../../main/config/prisma'
 import { createLoanSchema } from '../../main/schemas/loan/create-loan-schema'
 import { updateLoanStatusSchema } from '../../main/schemas/loan/update-loan-status-schema'
 import { paginationSchema } from '../../main/schemas/pagination-schema'
+import { LoanRepository } from '../../repository/loan-repository'
 
 export class LoanController {
-  constructor() {
+  constructor(private readonly loanRepository: LoanRepository) {
+    this.loanRepository = loanRepository
   }
   async createLoan(
     request: HttpRequest<( typeof createLoanSchema._output)>,
@@ -52,11 +54,7 @@ export class LoanController {
     var user = request.auth!.user!
     const { id } = request.params!
 
-    const loan = await prisma.loan.findUnique({
-      where: {
-        id: id
-      }
-    })
+    const loan = await this.loanRepository.getLoanById(id)
 
     if(!loan) {
       return badRequest(new Error('Loan not found'))
@@ -75,11 +73,7 @@ export class LoanController {
     var user = request.auth!.user!
     const { id } = request.params!
 
-    var loan = await prisma.loan.findUnique({
-      where: {
-        id: id
-      }
-    })
+    var loan = await this.loanRepository.getLoanById(id)
 
     if(!loan) {
       return badRequest(new Error('Loan not found'))
@@ -89,14 +83,9 @@ export class LoanController {
       return badRequest(new Error('Loan already processed'))
     }
 
-    loan = await prisma.loan.update({
-      where: {
-        id: id
-      },
-      data: {
-        status: request.body!.status,
-        remaining_balance: loan.amount
-      }
+    loan = await this.loanRepository.updateLoan(id, {
+      status: request.body!.status,
+      remaining_balance: loan.amount
     })
 
     return ok(loan)
