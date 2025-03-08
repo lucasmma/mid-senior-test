@@ -39,7 +39,7 @@ export class PaymentController {
       data: {
         loan_id: body.loanId,
         amount_paid: body.amountPaid,
-        payment_date: new Date(body.paymentDate),
+        payment_date: body.paymentDate,
       }
     })
 
