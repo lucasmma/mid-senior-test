@@ -6,7 +6,7 @@ const swaggerOptions: swaggerJsdoc.Options = {
     openapi: '3.0.0',
     servers: [
       {
-        url: '/api/v1',
+        url: '/api',
       },
     ],
     schemes: ['http', 'https'],
