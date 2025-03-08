@@ -12,33 +12,6 @@ import { paginationSchema } from '../schemas/pagination-schema'
  *   name: Payments
  *   description: API for payments in the system
  * 
- * components:
- *   schemas:
- *     Payment:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           example: "cl1j9c9f0g2b0a0h6jj0"
- *         loanId:
- *           type: string
- *           example: "cl1j9c9f0g2b0a0h6jj0"
- *         amountPaid:
- *           type: number
- *           example: 100
- *         paymentDate:
- *           type: string
- *           format: date-time
- *           example: "2024-12-30T00:00:00Z"
- *       required:
- *         - id
- *         - loanId
- *         - amountPaid
- *         - paymentDate
- *       additionalProperties: false
- *       description: |
- *         Payment schema representing a payment in the system.
- * 
  * /payments:
  *   post:
  *     tags:
@@ -74,6 +47,8 @@ import { paginationSchema } from '../schemas/pagination-schema'
  *         schema:
  *           $ref: '#/components/parameters/IdParameter'
  *         description: Loan ID
+ *       - $ref: '#/components/parameters/SkipParameter'
+ *       - $ref: '#/components/parameters/LimitParameter'
  *     responses:
  *       200:
  *         description: OK
