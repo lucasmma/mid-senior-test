@@ -4,6 +4,7 @@ import { badRequest, ok } from '../helpers/http-helper'
 import prisma from '../../main/config/prisma'
 import { LoanRepository } from '../../repository/loan-repository'
 import { makeLoanCache } from '../../main/factories/cache/loan-cache-factory'
+import { redis } from '../../main/config/redis'
 
 jest.mock('../../main/config/prisma', () => ({
   payment: {
@@ -33,6 +34,11 @@ describe('PaymentController', () => {
   let paymentCreate = prisma.payment.create as jest.Mock
   let paymentFindMany = prisma.payment.findMany as jest.Mock
   let loanFindUnique = prisma.loan.findUnique as jest.Mock
+
+  afterAll(async () => {
+    await redis.quit();
+  })
+
 
   beforeEach(() => {
     loanRepository = new LoanRepository(makeLoanCache()) as jest.Mocked<LoanRepository>
