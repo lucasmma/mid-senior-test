@@ -8,9 +8,9 @@ export class LoanRepository implements DbLoanRepository {
     this.loanCache = loanCache
   }
 
-  createLoan(data: {amount: number, purpose: string, duration: number, user_id: string}): Promise<Loan> {
+  async createLoan(data: {amount: number, purpose: string, duration: number, user_id: string}): Promise<Loan> {
     // implementation
-    const loan = prisma.loan.create({
+    const loan = await prisma.loan.create({
       data: {
         amount: data.amount,
         purpose: data.purpose,
