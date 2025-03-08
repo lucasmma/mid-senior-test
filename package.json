@@ -8,7 +8,7 @@
     "start": "ts-node ./src/main/server.ts",
     "build": "npx prisma generate && tsc",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests --config=jest.config.js"
+    "test": "jest --passWithNoTests --config=jest.config.js --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
