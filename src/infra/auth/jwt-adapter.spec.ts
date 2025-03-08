@@ -5,7 +5,6 @@ import { JwtAdapter } from './jwt-adapter';
 
 const mockUser: Omit<User, 'password'> = {
   id: '13129039120',
-  documentNumber: '123456789',
   role: 'USER',
   name: 'John Doe',
   email: 'john.doe@example.com',
