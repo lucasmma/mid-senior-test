@@ -75,6 +75,10 @@ export class PaymentController {
       return badRequest(new Error('Loan not found'))
     }
 
+    if(user.role == 'USER' && loan.user_id !== user.id) {
+      return badRequest(new Error('Loan not found'))
+    }
+
     const payments = await prisma.payment.findMany({
       where: {
         loan_id: id
