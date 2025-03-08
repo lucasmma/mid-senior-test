@@ -3,29 +3,26 @@ import { z } from "zod";
 /**
  * @openapi
  * components:
- *   schemas:
- *     Pagination:
- *       type: object
- *       properties:
- *         skip:
- *           type: integer
- *           minimum: 1
- *           example: 1
- *         limit:
- *           type: integer
- *           minimum: 1
- *           example: 10
- *       required:
- *         - skip
- *         - limit
- *       additionalProperties: false
- *       description: |
- *         Schema for handling pagination.
- *         - `skip`: The number of items to skip.
- *         - `limit`: The number of items per request.
- *       example:
- *         page: 1
- *         limit: 10
+ *   parameters:
+ *     SkipParameter:
+ *       in: query
+ *       name: skip
+ *       description: The number of items to skip.
+ *       required: true
+ *       schema:
+ *         type: integer
+ *         minimum: 1
+ *         example: 1
+ *     
+ *     LimitParameter:
+ *       in: query
+ *       name: limit
+ *       description: The number of items per request.
+ *       required: true
+ *       schema:
+ *         type: integer
+ *         minimum: 1
+ *         example: 10
  */
 
 export const paginationSchema = z.object({
