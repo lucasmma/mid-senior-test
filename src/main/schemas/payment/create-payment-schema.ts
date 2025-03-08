@@ -38,4 +38,4 @@ export const createPaymentSchema = z.object({
     message: 'Amount paid must be greater than or equal to 0',
   }),
   paymentDate: z.date(),
-});
+}).strict();

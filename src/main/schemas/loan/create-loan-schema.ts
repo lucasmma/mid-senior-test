@@ -36,4 +36,4 @@ export const createLoanSchema = z.object({
   amount: z.number(),
   purpose: z.string(),
   duration: z.number().int(),
-});
+}).strict();
