@@ -36,6 +36,7 @@ export const adaptRoute = (controller: object, handle: (httpRequest: HttpRequest
             }
             return false; // Indicate validation failure
           }
+          Object.assign(data, schema.parse(data))
         }
         return true; // Indicate validation success
       };
