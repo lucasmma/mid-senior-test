@@ -2,6 +2,7 @@ import { HttpRequest, HttpResponse } from '../protocols'
 import { badRequest, ok } from '../helpers/http-helper'
 import prisma from '../../main/config/prisma'
 import { createPaymentSchema } from '../../main/schemas/payment/create-payment-schema'
+import { paginationSchema } from '../../main/schemas/pagination-schema'
 
 export class PaymentController {
   constructor() {
@@ -59,7 +60,7 @@ export class PaymentController {
   }
 
   async listPayment(
-    request: HttpRequest,
+    request: HttpRequest<null, (typeof paginationSchema._output)>,
   ): Promise<HttpResponse> {
     var user = request.auth!.user!
     const { id } = request.params!
@@ -78,6 +79,8 @@ export class PaymentController {
       where: {
         loan_id: id
       },
+      skip: request.query?.skip,
+      take: request.query?.take,
     })
 
     return ok(payments)
