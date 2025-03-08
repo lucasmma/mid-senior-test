@@ -37,5 +37,10 @@ export const createPaymentSchema = z.object({
   amountPaid: z.number().refine(value => value >= 0, {
     message: 'Amount paid must be greater than or equal to 0',
   }),
-  paymentDate: z.date(),
+  paymentDate: z.string()
+    .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Invalid date format. Use dd/MM/yyyy.")
+    .transform((val) => {
+      const [day, month, year] = val.split("/").map(Number);
+      return new Date(year, month - 1, day); // JavaScript Date uses 0-based months
+    }),
 }).strict();
