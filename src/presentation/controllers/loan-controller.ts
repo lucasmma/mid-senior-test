@@ -1,5 +1,5 @@
 import { HttpRequest, HttpResponse } from '../protocols'
-import { badRequest, ok } from '../helpers/http-helper'
+import { badRequest, ok, unauthorized } from '../helpers/http-helper'
 import prisma from '../../main/config/prisma'
 import { createLoanSchema } from '../../main/schemas/loan/create-loan-schema'
 import { updateLoanStatusSchema } from '../../main/schemas/loan/update-loan-status-schema'
@@ -55,7 +55,7 @@ export class LoanController {
     }
 
     if(user.role == 'USER' && loan.user_id !== user.id) {
-      return badRequest(new Error('Loan not found'))
+      return unauthorized()
     }
 
     return ok(loan)
