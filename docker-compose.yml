@@ -1,6 +1,22 @@
-version: '3.8'
-
 services:
+  express-server:
+    build:
+      context: . # Path to your Express app Dockerfile
+      dockerfile: Dockerfile
+    container_name: express-server
+    ports:
+      - "8080:8080" # Expose Express server on port 8080
+    environment:
+      - DATABASE_URL=postgresql://express_user:express_pass@postgres:5432/express_db
+      - JWT_SECRET=2b6cdc4c4ba4493aabc18e1bcae8c64ddb3180ba5438459271caad8433c3dea74ac30b3def698d5a5b6ccd23bebf2796f537aeca24324db81b38e43e3b02b9e9
+      - SECONDARY_JWT_SECRET=4c9e22446e3ec0b7fac0efd348f0867eb226cc43f766d97866b072687cb9d095d9d48105afbe8f3b1cc877a7990618bbb9261e71a957dd77b1445e507de17708
+      - REDIS_URL=redis://redis:6379
+
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
   redis:
     image: redis:latest
     container_name: redis_server
