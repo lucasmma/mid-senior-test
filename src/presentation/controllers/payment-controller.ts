@@ -4,6 +4,7 @@ import prisma from '../../main/config/prisma'
 import { createPaymentSchema } from '../../main/schemas/payment/create-payment-schema'
 import { paginationSchema } from '../../main/schemas/pagination-schema'
 import { LoanRepository } from '../../repository/loan-repository'
+import { transactionErrorCounter } from '../../main/config/registry-metrics'
 
 export class PaymentController {
   constructor(private readonly loanRepository: LoanRepository) {
@@ -18,18 +19,21 @@ export class PaymentController {
     const loan = await this.loanRepository.getLoanById(body.loanId)
 
     if (!loan) {
+      transactionErrorCounter.inc({ error_type: 'loan_not_found', method: 'createPayment'});
       return notFound(new Error('Loan not found'))
     }
 
     if (loan.user_id != user.id) {
+      transactionErrorCounter.inc({ error_type: 'loan_doesnt_belong_to_user', method: 'createPayment'});
       return badRequest(new Error('Loan does not belong to user'))
     }
-
+    
     if(loan.status != 'APPROVED') {
       return badRequest(new Error('Loan is not approved'))
     }
-
+    
     if(loan.remaining_balance < body.amountPaid) {
+      transactionErrorCounter.inc({ error_type: 'amount_is_greater', method: 'createPayment'});
       return badRequest(new Error('Amount paid is greater than remaining balance'))
     }
 
@@ -65,11 +69,13 @@ export class PaymentController {
     })
 
     if(!loan) {
+      transactionErrorCounter.inc({ error_type: 'loan_not_found', method: 'listPayment'});
       return notFound(new Error('Loan not found'))
     }
 
     if(user.role == 'USER' && loan.user_id !== user.id) {
-      return notFound(new Error('Loan not found'))
+      transactionErrorCounter.inc({ error_type: 'loan_doesnt_belong_to_user', method: 'listPayment'});
+      return badRequest(new Error('Loan does not belong to user'))
     }
 
     const payments = await prisma.payment.findMany({
