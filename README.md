@@ -22,15 +22,11 @@ This will start:
 - The postgres database on port 5432
 - The redis server on port 6379
 - The prometheus server on port 9090
-- The grafana server on port 3000
+
 ### 2. Access the Services
 Express Server: http://localhost:8080
 
 Prometheus: http://localhost:9090
-
-Grafana: http://localhost:3000
-Username: admin
-Password: admin
 
 ### 3. Run Tests
 To run tests locally (optional), you can execute:
@@ -39,6 +35,25 @@ To run tests locally (optional), you can execute:
 npm install
 npm run test
 ```
+
+## Seeds  
+The project includes a seed file that initializes a test user and a test loan, allowing you to quickly test the application without manually creating them.  
+
+### Test Credentials  
+
+#### User Account  
+```bash
+Email: user@mail.com  
+Password: 123456  
+```
+``
+#### Admin Account  
+```bash
+Email: admin@mail.com  
+Password: 123456  
+```
+
+The PATCH endpoint to approve or reject loan is protected by admin role, so you have to use the admin credentials to approve or reject the loan.
 
 ## API Documentation
 
