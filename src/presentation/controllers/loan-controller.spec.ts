@@ -5,6 +5,25 @@ import prisma from '../../main/config/prisma'
 import { LoanRepository } from '../../repository/loan-repository'
 import { makeLoanCache } from '../../main/factories/cache/loan-cache-factory'
 import { redis } from '../../main/config/redis'
+import { CacheProtocol } from '../../data/protocols/cache'
+
+
+// mock cacheAdapter
+class MockCacheAdapter implements CacheProtocol {
+  async get<T>(key: string): Promise<T | null> {
+    return null
+  }
+  async set<T>(key: string, value: T, duration?: number): Promise<void> {
+    return
+  }
+  async delete(key: string): Promise<void> {
+    return
+  }
+  async getMany<T>(): Promise<T[] | null> {
+    return null
+  }
+}
+
 
 jest.mock('../../main/config/prisma', () => ({
   loan: {
@@ -40,7 +59,8 @@ describe('LoanController', () => {
   })
 
   beforeEach(() => {
-    loanRepository = new LoanRepository(makeLoanCache()) as jest.Mocked<LoanRepository>
+    const cacheAdapter = new MockCacheAdapter()
+    loanRepository = new LoanRepository(cacheAdapter) as jest.Mocked<LoanRepository>
     loanController = new LoanController(loanRepository)
     jest.clearAllMocks()
   })
@@ -52,10 +72,13 @@ describe('LoanController', () => {
         auth: { user: mockUser },
       } as HttpRequest
 
-      loanRepository.createLoan.mockResolvedValue({ id: '123', user_id: 'user1', status: 'PENDING', remaining_balance: 500, total_paid: 200, amount: 100000, duration: 12, purpose: 'Test', created_at: new Date(), updatedAt: new Date() })
+      var createdAt = new Date()
+      var updatedAt = new Date()
+
+      loanRepository.createLoan.mockResolvedValue({ id: '123', user_id: 'user1', status: 'PENDING', remaining_balance: 500, total_paid: 200, amount: 100000, duration: 12, purpose: 'Test', created_at: createdAt, updatedAt: updatedAt })
 
       const response = await loanController.createLoan(request)
-      expect(response).toEqual(ok({ id: '123', user_id: 'user1', status: 'PENDING', remaining_balance: 500, total_paid: 200, amount: 100000, duration: 12, purpose: 'Test', created_at: new Date(), updatedAt: new Date() }))
+      expect(response).toEqual(ok({ id: '123', user_id: 'user1', status: 'PENDING', remaining_balance: 500, total_paid: 200, amount: 100000, duration: 12, purpose: 'Test', created_at: createdAt, updatedAt: updatedAt }))
     })
   })
 

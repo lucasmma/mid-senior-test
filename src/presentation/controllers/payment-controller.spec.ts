@@ -5,6 +5,23 @@ import prisma from '../../main/config/prisma'
 import { LoanRepository } from '../../repository/loan-repository'
 import { makeLoanCache } from '../../main/factories/cache/loan-cache-factory'
 import { redis } from '../../main/config/redis'
+import { CacheProtocol } from '../../data/protocols/cache'
+
+class MockCacheAdapter implements CacheProtocol {
+  async get<T>(key: string): Promise<T | null> {
+    return null
+  }
+  async set<T>(key: string, value: T, duration?: number): Promise<void> {
+    return
+  }
+  async delete(key: string): Promise<void> {
+    return
+  }
+  async getMany<T>(): Promise<T[] | null> {
+    return null
+  }
+}
+
 
 jest.mock('../../main/config/prisma', () => ({
   payment: {
@@ -41,7 +58,8 @@ describe('PaymentController', () => {
 
 
   beforeEach(() => {
-    loanRepository = new LoanRepository(makeLoanCache()) as jest.Mocked<LoanRepository>
+    const cacheAdapter = new MockCacheAdapter()
+    loanRepository = new LoanRepository(cacheAdapter) as jest.Mocked<LoanRepository>
     paymentController = new PaymentController(loanRepository)
     jest.clearAllMocks()
   })
