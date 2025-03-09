@@ -64,8 +64,7 @@ import { adaptAuthRoute } from '../route-adapters/auth-route-adapter'
  *         id: "cl1j9c9f0g2b0a0h6jj0"
  *         email: "user@example.com"
  *         name: "John Doe"
- *         password: "password123"
- *         role: "USER"
+ *         password: "hashedPassword"
  *         createdAt: "2024-12-30T00:00:00Z"
  *         updatedAt: "2024-12-30T00:00:00Z"
  * 
@@ -110,9 +109,9 @@ import { adaptAuthRoute } from '../route-adapters/auth-route-adapter'
  *             schema:
  *               type: object
  *               properties:
- *                 accessToken:
+ *                 token:
  *                   type: string
- *                   example: "access_token_example"
+ *                   example: "token_example"
  *                 refreshToken:
  *                   type: string
  *                   example: "refresh_token_example"
