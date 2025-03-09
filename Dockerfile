@@ -1,31 +1,15 @@
-FROM node:20-alpine AS builder
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
-
 FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
-# Install only production dependencies
-COPY --from=builder /usr/src/app/package*.json ./
-RUN npm install --production
+COPY package.json package-lock.json ./
 
-# Copy the build files and Prisma client
-COPY --from=builder /usr/src/app/dist ./dist
-COPY --from=builder /usr/src/app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /usr/src/app/prisma ./prisma
+RUN npm ci
 
-EXPOSE 443
+COPY . .
 
-# COPY .env .env  
-# Copy Prisma migrations and apply them
-COPY --from=builder /usr/src/app/prisma/migrations ./prisma/migrations
+RUN rm -f .env
 
-# COPY .env .env  
+EXPOSE 8080
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main/server.js"]
+CMD ["sh", "-c", "npm run db:deploy && npx prisma generate && npm run db:seed && npm start"]
