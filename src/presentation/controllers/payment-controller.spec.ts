@@ -144,6 +144,19 @@ describe('PaymentController', () => {
       expect(response).toEqual(notFound(new Error('Loan not found')))
     })
 
+    it('should return bad request if loan does not belong to user', async () => {
+      const request = {
+        auth: { user: mockUser },
+        params: { id: 'loan1' },
+      } as HttpRequest
+
+      loanFindUnique.mockResolvedValue({ id: 'loan1', user_id: 'user2' })
+
+      const response = await paymentController.listPayment(request)
+
+      expect(response).toEqual(badRequest(new Error('Loan does not belong to user')))
+    })
+
     it('should return payments list if loan exists', async () => {
       const request = {
         params: { id: 'loan1' },
