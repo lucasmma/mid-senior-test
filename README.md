@@ -24,7 +24,7 @@ This will start:
 - The prometheus server on port 9090
 
 ### 2. Access the Services
-Express Server: http://localhost:8080
+Express Server: http://localhost:8080/api
 
 Prometheus: http://localhost:9090
 
