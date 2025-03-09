@@ -118,6 +118,19 @@ describe('LoanController', () => {
   })
 
   describe('updateStatus', () => {
+    it('should return bad request if loan is not found', async () => {
+      const request = {
+        auth: { user: mockUser },
+        params: { id: 'loan1' },
+        body: { status: 'APPROVED' },
+      } as HttpRequest
+
+      loanRepository.getLoanById.mockResolvedValue(null)
+
+      const response = await loanController.updateStatus(request)
+      expect(response).toEqual(notFound(new Error('Loan not found')))
+    })
+
     it('should return bad request if loan is already processed', async () => {
       const request = {
         auth: { user: mockUser },
