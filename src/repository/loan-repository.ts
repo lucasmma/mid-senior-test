@@ -1,10 +1,10 @@
 import { Loan } from '@prisma/client'
 import { DbLoanRepository } from '../data/protocols/db-loan-repository'
 import prisma from '../main/config/prisma'
-import { CacheAdapter } from '../infra/cache/cache-adapter'
+import { CacheProtocol } from '../data/protocols/cache'
 
 export class LoanRepository implements DbLoanRepository {
-  constructor(private readonly loanCache: CacheAdapter) {
+  constructor(private readonly loanCache: CacheProtocol) {
     this.loanCache = loanCache
   }
 
