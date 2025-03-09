@@ -1,191 +1,90 @@
-# Personal Loan Application Technical Test
+# Personal Loan Application
 
-Welcome to the **Personal Loan Application** backend technical test! This project is designed to assess your ability to build a backend application using **Node.js**, **Express.js**, and **PostgreSQL** while implementing features for user authentication, loan management, and loan payments. The app should also be containerized using **Docker**.
+This project is a personal loan application, where the user can create account, request for loans, check the status of the loan and also pay the loan partially or totally.
 
----
+It was used a scalable architecture using cache, rate-limiting, monitoring tools and advanced security strategies, using 4 services.
 
-## Context
-
-You will develop a backend API that:
-1. Allows users to register and apply for personal loans.
-2. Allows authenticated users to manage their loans and make payments.
-3. Includes payments management, loan balance tracking, and loan history.
-
-Your solution should demonstrate your expertise in:
-- Backend development using **Node.js**.
-- API design and implementation.
-- Database design and management with **PostgreSQL**.
-- Dockerization of the application for easy deployment.
-- Writing modular, clean, and testable code.
+Express(Typescript), Redis, PostgreSQL, Prometheus
 
 ---
 
-## Requirements
+### 1. Start the Project with Docker
+Run the following command to build and start the containers:
+(If you dont want to run seed data, you can remove the seed command from the Dockerfile, basically removing "&& npm run db:seed " it will work)
 
-### Core Features
 
-1. **User Registration and Authentication**
-    - Users must be able to register by providing their `name`, `email`, and `password`.
-    - Authentication should be implemented using **JWT (JSON Web Tokens)**.
-    - Secured endpoints should be accessible only to authenticated users.
+```bash
+docker-compose up --build
+```
+This will start:
 
-2. **Loan Management**
-    - Users should be able to:
-        - Apply for a loan by specifying:
-            - Loan amount.
-            - Purpose of the loan.
-            - Duration of the loan (in months).
-        - View the status of their loans.
-        - Loan statuses: **Pending**, **Approved**, or **Rejected**.
-    - An endpoint should allow a loan's status to be updated to **Approved** or **Rejected** (e.g., simulating administrative approval).
+- The express-server on port 8080
+- The postgres database on port 5432
+- The redis server on port 6379
+- The prometheus server on port 9090
+- The grafana server on port 3000
+### 2. Access the Services
+Express Server: http://localhost:8080
 
-3. **Payments Management**
-    - Users must be able to make payments toward their loan balance.
-    - Payment details should include:
-        - Loan ID.
-        - Amount paid.
-        - Payment date.
-    - The loan's updated remaining balance should be calculated and stored after each payment.
-    - A user's loan payment history should be retrievable via an API endpoint.
+Prometheus: http://localhost:9090
 
-4. **Summary of Loan Details**
-    - Users should be able to retrieve:
-        - Loan total amount.
-        - Total paid so far.
-        - Remaining balance.
-        - Loan status.
+Grafana: http://localhost:3000
+Username: admin
+Password: admin
 
----
+### 3. Run Tests
+To run tests locally (optional), you can execute:
 
-## Database Schema
+```bash
+npm install
+npm run test
+```
 
-You should use **PostgreSQL** to design and implement the database for the application. The following schema is recommended:
+## API Documentation
 
-### 1. User Table
-| Column Name        | Type           | Description                       |
-|--------------------|----------------|-----------------------------------|
-| `id`               | Integer (PK)   | User's unique identifier.         |
-| `name`             | String         | User's full name.                 |
-| `email`            | String (Unique)| User's email address.             |
-| `password`         | String         | Hashed password.                  |
-| `created_at`       | Timestamp      | Time of user registration.        |
+You can access the Swagger API documentation at the following URL:
 
-### 2. Loan Table
-| Column Name        | Type           | Description                       |
-|--------------------|----------------|-----------------------------------|
-| `id`               | Integer (PK)   | Loan's unique identifier.         |
-| `user_id`          | Integer (FK)   | Foreign key referencing a user.   |
-| `amount`           | Float          | Total loan amount.                |
-| `purpose`          | String         | Purpose of the loan.              |
-| `duration`         | Integer        | Loan duration in months.          |
-| `status`           | String         | Loan status (`Pending`, `Approved`, `Rejected`). |
-| `total_paid`       | Float          | Sum of all payments.              |
-| `remaining_balance`| Float          | Outstanding balance of the loan.  |
-| `created_at`       | Timestamp      | Time of loan application.         |
+  ```bash
+    /api-docs
+  ```
 
-### 3. Payment Table
-| Column Name       | Type           | Description                       |
-|-------------------|----------------|-----------------------------------|
-| `id`              | Integer (PK)   | Payment's unique identifier.      |
-| `loan_id`         | Integer (FK)   | Foreign key referencing a loan.   |
-| `amount_paid`     | Float          | Payment amount.                   |
-| `payment_date`    | Date           | Date of payment.                  |
-| `created_at`      | Timestamp      | Timestamp of when this record was created. |
+## Monitoring
 
----
+You can access the Prometheus monitoring at the following URL:
 
-## API Endpoints
+  ```bash
+    /metrics
+  ```
 
-You are expected to implement the following RESTful API endpoints:
+## Postman Collection
 
-### User Authentication
-| HTTP Method | Endpoint               | Description                            | Auth Required |
-|-------------|------------------------|----------------------------------------|---------------|
-| POST        | `/api/users/register`  | Register a new user.                   | No            |
-| POST        | `/api/users/login`     | Authenticate and retrieve a JWT token. | No            |
+You can access the project's Postman collection using the following link:
 
-### Loan Management
-| HTTP Method | Endpoint                  | Description                                        | Auth Required |
-|-------------|---------------------------|----------------------------------------------------|---------------|
-| POST        | `/api/loans`              | Submit a new loan application.                    | Yes           |
-| GET         | `/api/loans`              | Retrieve all loans for the logged-in user.         | Yes           |
-| GET         | `/api/loans/:id`          | Retrieve details of a specific loan.              | Yes           |
-| PATCH       | `/api/loans/:id/status`   | Update the status of a loan (Pending → Approved/Rejected). | Yes (Admin only) |
+[View Postman Collection](https://universal-station-318821.postman.co/workspace/Code2~0f456f8a-7eef-447b-83d0-baba313d8d66/collection/23743628-07fb15e6-b14f-47c6-95d1-7f942525ca63?action=share&creator=23743628)
 
-### Payments
-| HTTP Method | Endpoint                  | Description                                        | Auth Required |
-|-------------|---------------------------|----------------------------------------------------|---------------|
-| POST        | `/api/payments`           | Make a payment for a loan.                        | Yes           |
-| GET         | `/api/loans/:id/payments` | Retrieve the payment history of a specific loan.  | Yes           |
+## Authentication
+This project uses JWT (JSON Web Token) for authentication. To enhance security, the JWT expires after 7 hours. When the token expires, you can use a **refresh token** to obtain a new JWT, allowing you to avoid re-authenticating every time the token expires.
 
----
+## Rate Limiter
 
-## Deliverables
+This project implements a **Rate Limiter** to prevent abuse and ensure fair use of the application's resources. The rate limiter is based on the user's IP address and limits the number of requests each IP can make.
 
-The following items must be part of the submission:
+### How it works:
+- Each IP can make **only 5 requests per minute**.
+- The rate limiter is implemented using **Redis**, which stores and tracks the number of requests for each IP address.
+- If an IP exceeds the request limit within the given time window, further requests will be blocked with a `429 Too Many Requests` response.
+- Redis' **TTL (Time-to-Live)** functionality automatically resets the request counter every minute, allowing the user to make new requests.
 
-1. **Source Code**:
-    - The backend application, organized and modular.
-    - Implementation of the required API endpoints.
+This ensures that the application is protected from excessive requests and remains performant even under heavy traffic.
 
-2. **Database Management**:
-    - Include SQL scripts or migrations for creating the database schema.
+## Assumptions
+- The user can have more than one loan at a time.
+- The user can pay the loan partially or totally, regardless the duration.
 
-3. **Docker Setup**:
-    - A `Dockerfile` to containerize the Node.js application.
-    - A `docker-compose.yml` to orchestrate the app with a PostgreSQL database.
-
-4. **Testing**:
-    - Write at least 3 unit tests covering the key features of the application (e.g., loan creation, payment processing, or JWT authentication).
-
-5. **Documentation**:
-    - Include a `README.md` (this file) with:
-        - **Setup Instructions**: Steps to build and run the application using Docker Compose.
-        - **Explanation of API Endpoints**: Include example requests and responses.
-        - **Assumptions**: Clarify any assumptions made during implementation.
-
----
-
-## Evaluation Criteria
-
-You will be evaluated based on the following:
-
-1. **API Design**:
-    - RESTful conventions, consistency, and correctness.
-    - Proper HTTP status codes and detailed error handling.
-
-2. **Code Quality**:
-    - Modular, maintainable, and well-documented code.
-    - Use of best practices such as validation, middleware, environment variables, and security practices.
-
-3. **Database Design**:
-    - Efficient schema design and relationships between entities.
-    - Correct calculations for loan balances and payments.
-
-4. **Docker and Deployment**:
-    - Functional Dockerfile and Docker Compose setup.
-    - Ease of local deployment using containers.
-
-5. **Documentation**:
-    - Clear `README.md` with well-explained setup and usage instructions.
-
-6. **Bonus Points**:
-    - Database migrations with tools like Sequelize or Knex.js.
-    - Advanced security features, such as bcrypt for password hashing or rate limiting.
-    - Pagination for listing loans or payments.
-    - Logging mechanisms for user actions.
-
----
-
-## Getting Started
-
-Here are the steps to get started:
-
-Here are the steps to get started:
-
-1. Fork the repository.
-2. Send the email with the repository URL to me after you completed the solution.
-
----
-
-Good luck, and happy coding! 🚀
+## Improvements to be made
+- Add a grafana to vizualize the metrics from prometheus.
+- I would add a new status to loan, like "paid", so we can track the loans that are already paid, instead of checking remaining_balance.
+- I would change the money fields to integer, so we can avoid floating point problems.
+- I would use redis (with expiration) to store the tokens that was revoked (it happens when user ask to renew tokens), so we can check if the token is valid or not.
+- If necessary, I would add user_id to the payment table, so we can track the payments made by each user, regardless the relation with loan.
+- If necessary I would some add in loan approval some calculation to add fees to the payments
