@@ -1,5 +1,5 @@
 import { HttpRequest, HttpResponse } from '../protocols'
-import { badRequest, ok } from '../helpers/http-helper'
+import { badRequest, notFound, ok } from '../helpers/http-helper'
 import prisma from '../../main/config/prisma'
 import { createPaymentSchema } from '../../main/schemas/payment/create-payment-schema'
 import { paginationSchema } from '../../main/schemas/pagination-schema'
@@ -18,7 +18,7 @@ export class PaymentController {
     const loan = await this.loanRepository.getLoanById(body.loanId)
 
     if (!loan) {
-      return badRequest(new Error('Loan not found'))
+      return notFound(new Error('Loan not found'))
     }
 
     if (loan.user_id != user.id) {
@@ -65,11 +65,11 @@ export class PaymentController {
     })
 
     if(!loan) {
-      return badRequest(new Error('Loan not found'))
+      return notFound(new Error('Loan not found'))
     }
 
     if(user.role == 'USER' && loan.user_id !== user.id) {
-      return badRequest(new Error('Loan not found'))
+      return notFound(new Error('Loan not found'))
     }
 
     const payments = await prisma.payment.findMany({
