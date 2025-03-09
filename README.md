@@ -97,6 +97,8 @@ This ensures that the application is protected from excessive requests and remai
 - The user can pay the loan partially or totally, regardless the duration.
 
 ## Improvements to be made
+- Create an adapter for the prisma, so we can change the ORM easily.
+- Create an adapter for prometheus.
 - Add a grafana to vizualize the metrics from prometheus.
 - I would add a new status to loan, like "paid", so we can track the loans that are already paid, instead of checking remaining_balance.
 - I would change the money fields to integer, so we can avoid floating point problems.
