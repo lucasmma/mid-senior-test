@@ -46,7 +46,7 @@ The project includes a seed file that initializes a test user and a test loan, a
 Email: user@mail.com  
 Password: 123456  
 ```
-``
+
 #### Admin Account  
 ```bash
 Email: admin@mail.com  
