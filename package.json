@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "seed": "ts-node prisma/seed.ts",
+    "db:seed": "ts-node prisma/seed.ts",
+    "db:deploy": "npx prisma migrate deploy",
     "start": "ts-node ./src/main/server.ts",
     "build": "npx prisma generate && tsc",
     "lint": "eslint . --ext .ts",
