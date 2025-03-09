@@ -1,6 +1,6 @@
 import { PaymentController } from './payment-controller'
 import { HttpRequest, HttpResponse } from '../protocols'
-import { badRequest, ok } from '../helpers/http-helper'
+import { badRequest, notFound, ok } from '../helpers/http-helper'
 import prisma from '../../main/config/prisma'
 import { LoanRepository } from '../../repository/loan-repository'
 import { makeLoanCache } from '../../main/factories/cache/loan-cache-factory'
@@ -75,7 +75,7 @@ describe('PaymentController', () => {
 
       const response = await paymentController.createPayment(request)
 
-      expect(response).toEqual(badRequest(new Error('Loan not found')))
+      expect(response).toEqual(notFound(new Error('Loan not found')))
     })
 
     it('should return bad request if loan does not belong to user', async () => {
@@ -141,7 +141,7 @@ describe('PaymentController', () => {
 
       const response = await paymentController.listPayment(request)
 
-      expect(response).toEqual(badRequest(new Error('Loan not found')))
+      expect(response).toEqual(notFound(new Error('Loan not found')))
     })
 
     it('should return payments list if loan exists', async () => {

@@ -1,6 +1,6 @@
 import { LoanController } from './loan-controller'
 import { HttpRequest, HttpResponse } from '../protocols'
-import { badRequest, ok, unauthorized } from '../helpers/http-helper'
+import { badRequest, notFound, ok, unauthorized } from '../helpers/http-helper'
 import prisma from '../../main/config/prisma'
 import { LoanRepository } from '../../repository/loan-repository'
 import { makeLoanCache } from '../../main/factories/cache/loan-cache-factory'
@@ -103,7 +103,7 @@ describe('LoanController', () => {
       loanRepository.getLoanById.mockResolvedValue(null)
 
       const response = await loanController.listLoan(request)
-      expect(response).toEqual(badRequest(new Error('Loan not found')))
+      expect(response).toEqual(notFound(new Error('Loan not found')))
     })
 
     it('should return unauthorized if loan is not from the user and user is not admin', async () => {
