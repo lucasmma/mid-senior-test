@@ -1,5 +1,5 @@
 import { HttpRequest, HttpResponse } from '../protocols'
-import { badRequest, ok, unauthorized } from '../helpers/http-helper'
+import { badRequest, notFound, ok, unauthorized } from '../helpers/http-helper'
 import prisma from '../../main/config/prisma'
 import { createLoanSchema } from '../../main/schemas/loan/create-loan-schema'
 import { updateLoanStatusSchema } from '../../main/schemas/loan/update-loan-status-schema'
@@ -51,7 +51,7 @@ export class LoanController {
     const loan = await this.loanRepository.getLoanById(id)
 
     if(!loan) {
-      return badRequest(new Error('Loan not found'))
+      return notFound(new Error('Loan not found'))
     }
 
     if(user.role == 'USER' && loan.user_id !== user.id) {
@@ -70,7 +70,7 @@ export class LoanController {
     var loan = await this.loanRepository.getLoanById(id)
 
     if(!loan) {
-      return badRequest(new Error('Loan not found'))
+      return notFound(new Error('Loan not found'))
     }
 
     if(loan.status == 'APPROVED' || loan.status == 'REJECTED') {
