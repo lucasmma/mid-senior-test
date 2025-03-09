@@ -12,6 +12,33 @@ import { paginationSchema } from '../schemas/pagination-schema'
  *   name: Payments
  *   description: API for payments in the system
  * 
+ * components:
+ *   schemas:
+ *     Payment:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           example: "cl1j9c9f0g2b0a0h6jj0"
+ *         loan_id:
+ *           type: string
+ *           example: "cl1j9c9f0g2b0a0h6jj0"
+ *         amount_paid:
+ *           type: number
+ *           example: 1000
+ *         payment_date:
+ *           type: string
+ *           format: date-time
+ *           example: "2024-12-30T00:00:00Z"
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *           example: "2024-12-30T00:00:00Z"
+ *         updated_at:
+ *           type: string
+ *           format: date-time
+ *           example: "2024-12-30T00:00:00Z"
+ * 
  * /payments:
  *   post:
  *     tags:
@@ -28,6 +55,10 @@ import { paginationSchema } from '../schemas/pagination-schema'
  *     responses:
  *       200:
  *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Payment'
  *       400:
  *         description: Bad Request
  *       500:
@@ -52,8 +83,16 @@ import { paginationSchema } from '../schemas/pagination-schema'
  *     responses:
  *       200:
  *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Payment'
  *       400:
  *         description: Bad Request
+ *       404:
+ *         description: Not Found
  *       500:
  *         description: Server Error
  */
