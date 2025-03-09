@@ -8,17 +8,15 @@ import { z } from "zod";
  *       in: query
  *       name: skip
  *       description: The number of items to skip.
- *       required: true
  *       schema:
  *         type: integer
- *         minimum: 1
+ *         minimum: 0
  *         example: 1
  *     
  *     LimitParameter:
  *       in: query
- *       name: limit
+ *       name: take
  *       description: The number of items per request.
- *       required: true
  *       schema:
  *         type: integer
  *         minimum: 1
