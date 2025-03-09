@@ -9,9 +9,48 @@ import { paginationSchema } from '../schemas/pagination-schema'
 
 /**
  * @openapi
+ * components:
+ *   schemas:
+ *     Loan:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           example: "cl1j9c9f0g2b0a0h6jj0"
+ *         amount:
+ *           type: number
+ *           example: 1000
+ *         purpose:
+ *           type: string
+ *           example: "Business"
+ *         duration:
+ *           type: number
+ *           example: 12
+ *         user_id:
+ *           type: string
+ *           example: "cl1j9c9f0g2b0a0h6jj0"
+ *         status:
+ *           type: string
+ *           enum: [PENDING, APPROVED, REJECTED]
+ *           example: "PENDING"
+ *         total_paid:
+ *           type: number
+ *           example: 0
+ *         remaining_balance:
+ *           type: number
+ *           example: 1000
+ *         created_at:
+ *           type: string
+ *           format: date-time
+ *           example: "2024-12-30T00:00:00Z"
+ *         updated_at:
+ *           type: string
+ *           format: date-time
+ *           example: "2024-12-30T00:00:00Z"
+ * 
  * tags:
- *   name: Loans
- *   description: API for loans in the system
+ *   - name: Loans
+ *     description: API for loans in the system
  * 
  * /loans:
  *   post:
@@ -29,6 +68,10 @@ import { paginationSchema } from '../schemas/pagination-schema'
  *     responses:
  *       200:
  *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Loan'
  *       400:
  *         description: Bad Request
  *       500:
@@ -46,6 +89,12 @@ import { paginationSchema } from '../schemas/pagination-schema'
  *     responses:
  *       200:
  *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Loan'
  *       400:
  *         description: Bad Request
  *       500:
@@ -61,16 +110,23 @@ import { paginationSchema } from '../schemas/pagination-schema'
  *     parameters:
  *       - in: path
  *         name: id
+ *         required: true
  *         schema:
- *           $ref: '#/components/parameters/IdParameter'
+ *           type: string
  *         description: Loan ID
  *     responses:
  *       200:
  *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Loan'
  *       400:
  *         description: Bad Request
  *       401:
  *         description: Unauthorized
+ *       404:
+ *         description: Not Found
  *       500:
  *         description: Server Error
  * 
@@ -84,8 +140,9 @@ import { paginationSchema } from '../schemas/pagination-schema'
  *     parameters:
  *       - in: path
  *         name: id
+ *         required: true
  *         schema:
- *           $ref: '#/components/parameters/IdParameter'
+ *           type: string
  *         description: Loan ID
  *     requestBody:
  *       required: true
@@ -96,12 +153,17 @@ import { paginationSchema } from '../schemas/pagination-schema'
  *     responses:
  *       200:
  *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Loan'
  *       400:
  *         description: Bad Request
+ *       404:
+ *         description: Not Found
  *       500:
  *         description: Server Error
  */
-
 
 export default (router: Router): void => {
   const baseRoute = '/loans'
